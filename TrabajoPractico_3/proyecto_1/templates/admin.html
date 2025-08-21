@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+    <style>
+        .seccion {
+            display: none; /* Ocultar secciones por defecto */
+        }
+        .seccion:target {
+            display: block; /* Mostrar la sección cuando está seleccionada */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Panel de {{ departamento }}</h1>
+        <ul>
+            <li><a href="{{ url_for('analitica') }}">Analítica</a></li>
+            <li><a href="{{ url_for('manejar_reclamo')}}">Manejar Reclamos</a></li>
+            {% if current_user.is_authenticated and current_user.id == 1 %}
+            <li><a href="{{ url_for('derivar_reclamo') }}">Derivar Reclamo</a></li>
+            {% endif %}
+            <li><a href="#ayuda" , seccion='ayuda'>Ayuda</a></li>
+            <li><a href="{{ url_for('logout') }}">Salir</a></li>
+        </ul>
+        
+        <div id="analitica" class="seccion analitica" {% if seccion == 'analitica' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <form action="{{ url_for('analitica')}}" method="POST"> 
+                <h2>Analítica</h2>
+                <p>Número de reclamos totales:  {{ reclamos_totales }}</p>
+                <p>Mediana de reclamos resueltos:  {{ mediana_resueltos }} </p>
+                <p>Mediana de reclamos en proceso:  {{mediana_en_proceso}} </p>
+                <p>Gráfico circular: </p>
+                <br><img src="/static/grafico_circular.png"></br>
+                <p>Gráfico de palabras: </p>
+                <br><img src="/static/grafico_palabras.png"></br>
+                <p>Generar reporte: </p>
+                <button type="submit" name="accion" value="descargar_pdf" >Descargar PDF</button>
+                <button type="submit" name="accion" value="descargar_html">Descargar HTML</button>
+            </form>
+        </div>        
+         
+        <div id="manejar_reclamo" class="seccion manejar_reclamo" {% if seccion == 'manejar_reclamo' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <form action="{{ url_for('manejar_reclamo')}}" method="POST"> </form>
+            <h2>Manejar Reclamos</h2>
+            <h1>Tabla de Reclamos</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Departamento</th>
+                        <th>Contenido</th> 
+                        <th>Estado</th>
+                        <th>Nuevo Estado</th>
+                        <th>Fecha/Hora</th>
+                        <th>ID Usuario Creador</th>
+                        <th>IDs Adherentes</th>
+                        <th>Días de Resolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reclamo in reclamos %}
+                    <tr>
+                        <td>{{ reclamo[0]  }}</td>
+                        <td>{{ reclamo[1] }}</td>
+                        <td>{{ reclamo[2]  }}</td>
+                        <td>{{ reclamo[3]  }}</td>
+                        <td>
+                            <form id="form_{{ reclamo[0] }}" action="{{ request.path }}" method="post">
+                                <select name="nuevo_estado">
+                                    <option value="pendiente" {% if reclamo[3] == "pendiente" %}selected{% endif %}>Pendiente</option>
+                                    <option value="en proceso" {% if reclamo[3] == "en proceso" %}selected{% endif %}>En Proceso</option>
+                                    <option value="invalido" {% if reclamo[3] == "invalido" %}selected{% endif %}>Invalido</option>
+                                    <option value="resuelto" {% if reclamo[3] == "resuelto" %}selected{% endif %}>Resuelto</option>
+                                </select>
+                                {% if (reclamo[3] == "en proceso" and reclamo[7] is none) or reclamo[3] == "resuelto" %}
+                                    <input type="number" name="dias_resolucion" placeholder="Días" min="1" max="15" value="{{ dias }}" required>
+                                {% else %}
+                                    <input type="number" name="dias_resolucion" placeholder="Días" min="1" max="15" value="{{ dias }}" disabled>
+                                {% endif %}
+                                <input type="hidden" name="reclamo_id" value="{{ reclamo[0] }}">
+                                <button type="submit">Guardar Cambio</button>
+                            </form>
+                        </td>
+                        <td>{{ reclamo[4] }}</td>
+                        <td>{{ reclamo[5]}}</td>
+                        <td>{{ reclamo[6]|join(', ') }}</td>
+                        <td>{{ reclamo[7] if reclamo[7] is not none else '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+
+        <div id="derivar_reclamo" class="seccion derivar_reclamo" {% if seccion == 'derivar_reclamo' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <h2>Derivar Reclamos</h2>
+            <h1>Tabla de Reclamos</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Departamento Actual</th>
+                        <th>Nuevo Departamento</th>
+                        <th>Contenido</th> 
+                        <th>Estado</th>
+                        <th>Fecha/Hora</th>
+                        <th>ID Usuario Creador</th>
+                        <th>IDs Adherentes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reclamo in reclamos %}
+                    <tr>
+                        <td>{{ reclamo[0] }}</td>
+                        <td>{{ reclamo[1] }}</td>
+                        <td>
+                            <form id="form_departamento_{{ reclamo[0] }}" action="{{ url_for('derivar_reclamo')}}" method="POST"> 
+                                <select name="nuevo_departamento" form="form_departamento_{{ reclamo[0] }}">
+                                    <option value="soporte informático">Soporte Informático</option>
+                                    <option value="secretaría técnica">Secretaría Técnica</option>
+                                    <option value="maestranza">Maestranza</option>
+                                </select>
+                                <input type="hidden" name="reclamo_id" value="{{ reclamo[0] }}">
+                                <button type="submit">Guardar Cambio</button>
+                            </form>
+                        </td>
+                        <td>{{ reclamo[2] }}</td>
+                        <td>{{ reclamo[3] }}</td>
+                        <td>{{ reclamo[4] }}</td>
+                        <td>{{ reclamo[5] }}</td>
+                        <td>{{ reclamo[6]|join(', ') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>        
+
+        <div id="ayuda" class="seccion">
+            <h2>Ayuda</h2>
+            <p>Guía de uso del dashboard.</p>
+
+                <strong>Manejar Reclamos:</strong><br>
+                En esta opción se muestra una lista de los reclamos pertenecientes al departamento, detallando:
+                <ul>
+                    <li>ID del reclamo, ID del usuario que lo generó, ID de usuario/s adheridos, Fecha/Hora (timestamp),
+                    , estado actual y opciones para editar el estado del mismo (pendiente, en proceso, resuelto, inválido)</li>
+                </ul>
+                Cuando un jefe de departamento inicia la resolución de un reclamo (cambia su estado de pendiente a en proceso) debe asignarle un tiempo de resolución al reclamo entre 1 a 15 días.
+                Para esto en la fila del reclamo corresponidente, elija la opcion de la columna "Nuevo estado" que desee, si es necesario indique los dias de resolucion. Luego presione en guardar cambio.
+            </p>
+            <p>
+                <strong>Analítica:</strong><br>
+                La aplicación muestra estadísticas sobre el número de reclamos:
+                <ul>
+                    <li>Número de reclamos totales</li>
+                    <li>Un diagrama circular compuesto de el porcentaje de reclamos en proceso, el porcentaje de reclamos resueltos
+                        y el porcentaje de reclamos pendientes. Todos los porcentajes referidos al total de reclamos</li>
+                    <li>Un grafico de palabras. Constituido por las 15 palabras claves más frecuentes en los reclamos.</li>
+                    <li>La mediana del tiempo de resolución de reclamos en proceso y resueltos.</li>
+                </ul>
+            </p>
+            <p>
+                <strong>Generar Reporte:</strong><br>
+                El dashboard permite al responsable generar un reporte con el estado de los reclamos, estadísticas y gráficas. El reporte puede generarse en formatos HTML o PDF.
+                Presione en el enlace "Generar reporte para descargar el archivo" para obtener la informacion brindada en la pestaña "analítica".
+            </p>
+            <p>
+                <strong>Secretaría Técnica:</strong><br>
+                El dashboard correspondiente al departamento de secretaría técnica tiene una opción adicional para derivar un reclamo a otro departamento si es necesario.
+                Para esto, haga click en el enlace "Derivar reclamo", situese en la fila del reclamo a derivar, en la casilla nuevo departamento seleccion el nuevo departamento al que se asignara el reclamo.
+                Repita el mismo proceso segun corresponda con otros reclamos de ser necesario.
+                Luego presione en el boton guardar cambios al final de la tabla para que estos cambios sean guardados.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

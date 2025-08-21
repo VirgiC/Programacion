@@ -1,0 +1,3 @@
+Galileo,Galilei,ggalileo@hotmail.com,12345,galileoadmin,2,maestranza
+Jane,Austen,ajane@hotmail.com,12345,janeadmin,1,secretaría técnica
+Isaac,Newton,nisaac@hotmail.com,12345,isaacadmin,3,soporte informático

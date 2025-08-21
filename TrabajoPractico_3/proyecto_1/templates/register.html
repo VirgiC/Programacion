@@ -1,0 +1,43 @@
+<!--Aun falta modificar y corregir-->
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Registro
+{% endblock %}
+
+{% block content %}
+	<div class="container mx-auto my-4">
+		<h1>Registro</h1>
+		
+		<div class="row">
+			<div class="col-lg-6">
+				<!--realiza un post a la misma ruta donde se crea el formulario-->
+				<!--{{ wtf.quick_form(reg_form, novalidate=True) }}		-->
+				
+				<form action="{{ url_for('register') }}" method="post">
+					{{ reg_form.hidden_tag() }}
+					{{ wtf.form_field(reg_form.username)}}
+					{{ wtf.form_field(reg_form.nombre) }}
+					{{ wtf.form_field(reg_form.apellido) }}
+					{{ wtf.form_field(reg_form.email) }}
+					{{ wtf.form_field(reg_form.password) }}
+					{{ wtf.form_field(reg_form.confirm) }}
+					{{ wtf.form_field(reg_form.claustro, options=[('Estudiante', 'Estudiante'), ('Docente', 'Docente'), ('PAyS', 'PAyS')]) }}
+					{{ wtf.form_field(reg_form.submit, value="Register") }}
+				</form>
+				
+                <!-- <form action="{{ url_for('register') }}" method="post">
+					{{ reg_form.hidden_tag() }}
+                    {{ wtf.form_field(reg_form.username)}}
+                    {{ wtf.form_field(reg_form.email) }}
+                    {{ wtf.form_field(reg_form.password) }}
+					{{ wtf.form_field(reg_form.confirm) }}
+                    {{ wtf.form_field(reg_form.submit, value = "Register") }}
+                </form> -->
+
+			</div>		
+		</div>
+		
+	</div>
+{% endblock %}

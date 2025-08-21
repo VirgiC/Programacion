@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        .fondo-semi-transparente {
+            background-color: rgba(0, 0, 0, 0.5); /* Color negro semi-transparente */
+            padding: 10px; /* Espacio alrededor del texto */
+            color: white; /* Color del texto */
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final del juego</title>
+    <style>
+        body {
+            background-image: url('{{ url_for("static", filename="final del juego.jpg") }}');
+            background-size: cover;
+        }
+        </style>
+    <body>
+        <div class="fondo-semi-transparente">
+        <h2 style="text-align:center;">¡Juego Finalizado!</h2>
+        <p style="text-align:center;" style="font-size:300%;">Puntuacion (aciertos/intentos):  {{puntuacion}} </p>
+    </div>
+        <form action="{{url_for('inicio') }}" method="POST">
+        <button style="text-align:center;" background-color=#007bff style="margin: 10px" id="btn1" class="button">Volver</button> 
+        </form> 
+    </body>
+       

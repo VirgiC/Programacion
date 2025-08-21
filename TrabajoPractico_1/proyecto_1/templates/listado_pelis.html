@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        .columnas {
+            column-count: 3;
+            column-gap: 30px; /* Espacio entre columnas */
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de las peliculas</title>
+</head>
+
+<style>
+    body {
+        background-image: url('{{ url_for("static", filename="wall-e.jpg") }}');
+        background-size: cover;
+    }
+   </style>
+
+   <body>
+        <h2 div style="color: white;" style="text-align:center;">Nombres de peliculas mencionadas</h2>
+        <div style="color: white;" class="columnas">
+        <p style="font-size:130%;">
+            {% for pelicula in lista %}
+            {{ pelicula }}<br>
+            {% endfor %}
+        </p>
+        </div>
+        <form action="{{url_for('inicio') }}" method="POST">
+            <button style="text-align:center;" background-color=#007bff style="margin: 10px" id="btn1" class="button">Volver</button> 
+        </form>   
+</body>
+
+</html>

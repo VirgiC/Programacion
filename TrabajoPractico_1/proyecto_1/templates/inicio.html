@@ -3,11 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicación Flask</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Inicio de Sesión</title>
+
+   
+
+    <style>
+        body {
+            background-image: url('{{ url_for("static", filename="inicio.png") }}');
+            background-size: cover;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 50vh;
+        }
+        input[type="text"] {
+            width: 250px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 250px;
+            margin-bottom: 10px;
+        }
+        .button {
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+        #btn1 {
+            background-color: #007bff;
+        }
+        #btn2 {
+            background-color: #28a745;
+        }
+        #btn3 {
+            background-color: #dc3545;
+        }
+        textarea {
+            width: 300px;
+            height: 200px;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Bienvenido a mi Aplicación Flask</h1>
-    <p>Esta es la página de inicio.</p>
+    
+ <h1 style="text-align:center;">¡Trivia de películas!</h1>
+
+ <h2>Instrucciones de juego:</h2>
+   
+    <p style="font-size:160%;">Se mostrarán tres opciones que corresponden a nombres de películas famosas<br>
+         y una frase que pertenece a una de ellas.<br>
+         ¡Elige la opción correcta para obtener una alta puntuación!</p>
+
+    <div class="container">
+     <form action="{{url_for('juego') }}" method="POST">
+            <input type="text" name= "input_nombre" placeholder="Nombre" required>
+            <input type="text" name="intentos_restantes" placeholder="¿Cuántas frases quiere jugar?" required pattern="^[3-9]$|^([1-4][0-9])$|^50$"> 
+            <button style="margin: 10px" id="btn1" class="button">Iniciar trivia</button>  
+     </form>
+    </div>
+    <div class="button-container">     
+     <form action="{{url_for('listado_peliculas') }}" method="POST">
+            <button style="margin: 10px" id="btn2" class="button">Listar peliculas</button>
+     </form>
+     <form action="{{url_for('resultados_juego') }}" method="POST">
+            <button style="margin: 10px" id="btn3" class="button">Ver resultados</button>
+     </form>
+    </div>
+    
 </body>
 </html>
+
+

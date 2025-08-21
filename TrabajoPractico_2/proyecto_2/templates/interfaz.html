@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+        /* Define el color del texto */
+        .red-text {
+            color: red;
+        }
+    </style>
+
+    <title>Carga de Cajón de Alimentos</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <h2>Carga de Cajón de Alimentos</h2>
+    <form action="{{url_for('interfaz') }}" method="POST">
+        <label for="cantidad_alimentos">Cantidad de Alimentos:</label>
+        <input type="number" name="cantidad_alimentos" placeholder="cantidad de alimentos" min="1" required><br><br>
+        <button style="margin: 10px" id="btn1" class="button">Cargar cajon</button>  
+    </form>
+    <table>
+        {% if peso_total is not none %}
+        <tr>
+            <th colspan="3">Peso Total del Cajón: {{ peso_total }}</th>
+        </tr>
+        {% endif %}
+
+        {% if diccionario.promedio_aw_fruta is not none %}
+            <tr {% if diccionario.promedio_aw_fruta > 0.9 %}class="red-text" {% endif %}>
+                <th colspan="3">Aw Promedio Frutas: {{ diccionario.promedio_aw_fruta }}</th>
+            </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_verdura is not none %}
+        <tr {% if diccionario.promedio_aw_verdura > 0.9 %}class="red-text" {% endif %}>
+            <th colspan="3">Aw Promedio Verduras: {{ diccionario.promedio_aw_verdura }}</th>
+        </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_kiwi is not none %}
+        <tr {% if diccionario.promedio_aw_kiwi > 0.9 %}class="red-text"{% endif %}>
+            <th colspan="3">Aw Promedio Kiwi: {{ diccionario.promedio_aw_kiwi }}</th>
+        </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_manzana is not none %}
+        <tr {% if diccionario.promedio_aw_manzana > 0.9 %}class="red-text"{% endif %}>
+            <th colspan="3">Aw promedio Manzana: {{ diccionario.promedio_aw_manzana }}</th>
+        </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_zanahoria is not none %}
+        <tr {% if diccionario.promedio_aw_zanahoria > 0.9 %}class="red-text" {% endif %}>
+            <th colspan="3">Aw promedio Zanahoria: {{ diccionario.promedio_aw_zanahoria }}</th>
+        </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_papa is not none %}
+        <tr {% if diccionario.promedio_aw_papa > 0.9 %}class="red-text" {% endif %}>
+            <th colspan="3">Aw promedio papa: {{ diccionario.promedio_aw_papa }}</th>
+        </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_general is not none %}
+        <tr {% if diccionario.promedio_aw_general > 0.9 %}class="red-text" {% endif %}>
+            <th colspan="3">Aw Promedio Total: {{ diccionario.promedio_aw_general }}</th>
+        </tr>
+        {% endif %}
+        {% if diccionario.promedio_aw_verdura > 0.9 or diccionario.promedio_aw_fruta > 0.9 or diccionario.promedio_aw_kiwi > 0.9 or diccionario.promedio_aw_manzana > 0.9 or diccionario.promedio_aw_zanahoria > 0.9 or diccionario.promedio_aw_papa > 0.9 %}
+        <tr>
+            <td colspan="3"><p>¡Atención! El valor de la actividad acuosa de las verduras o las frutas es mayor que 0.9.</p></td>
+        </tr>
+        {% endif %}
+    </table>
+  
+</body>
+</html>

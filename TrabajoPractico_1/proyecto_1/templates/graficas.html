@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graficas</title>
+</head>
+
+<body>
+    <h2 style="text-align:center;">"Resultados históricos"</h2>
+    
+    <img src="{{ url_for('static', filename='grafica_ejes.png') }}" alt="Gráfica de Ejes">
+    <br>
+    <img src="{{ url_for('static', filename='grafico_circular.png') }}" alt="Gráfica Circular">
+
+    <form action="{{ url_for('resultados_juego') }}" method="POST">
+        <button style="text-align:center; background-color:#007bff; margin: 10px;" id="btn1" class="button">Volver</button> 
+    </form> 
+
+    <a href="{{ url_for('generar_archivo_pdf') }}" download><button>Descargar PDF</button></a>
+
+</body>
+</html>

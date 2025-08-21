@@ -1,0 +1,4 @@
+### Trabajo Practico 3
+
+El presente proyecto se basa en el desarrollo de un sistema de atención y seguimiento de reclamos para la Facultad de Ingeniería de la UNER, utilizando una base de datos y una interfaz web. En esta interfaz se dara la posibilidad a cada usuario cliente ingresar su reclamo de manera simple y ágil, correspondiente a los requerimientos del enunciado. Ademas se permite el acceso a jefes de departamento y un secretario tecnico para la gestion y derivacion de los reclamos.
+Para el inicio de este proyecto realizamos un diagrama UML para las posibles clases a utilizar. Ademas, se definen las caracteristicas y responsabilidades que consideramos necesarias para cada clase.

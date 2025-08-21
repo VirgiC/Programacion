@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia</title>
+</head>
+
+<style>
+    body {
+        background-image: url('{{ url_for("static", filename="juego.jpg") }}');
+        background-size: cover;
+    }
+</style>
+
+<body>
+    <p style="font-size:160%;">{{frase}} <br> </p>
+
+    <div class="container">
+
+        <form action="{{ url_for('comprobar_opcion')}}" method="POST">
+
+            <input type="hidden" name="intentos_totales" value="{{ intentos_totales }}">
+            <input type="hidden" name="aciertos" value="{{ aciertos }}">
+
+            <input type="hidden" name="frase" value="{{ frase }}">
+            <input type="hidden" name="peli_1" value="{{ peli_1 }}">
+            <input type="hidden" name="peli_2" value="{{ peli_2 }}">
+            <input type="hidden" name="peli_3" value="{{ peli_3 }}">
+            <input type="hidden" name="intentos_restantes" value="{{ intentos_restantes }}">
+            
+            <input type="hidden" name="indice_correcto" value="{{ indice }}">
+            <input type="hidden" name="opcion" id="opcion" value="" />
+            <button style="margin: 10px" id="btn1" name="boton" value="{{peli_1}}" class="button">{{peli_1}}</button>
+            <button style="margin: 10px" id="btn2" name="boton" value="{{peli_2}}" class="button">{{peli_2}}</button>
+            <button style="margin: 10px" id="btn3" name="boton" value="{{peli_3}}" class="button">{{peli_3}}</button>
+        </form>
+    </div>
+    
+    <div id="opcionSeleccionadaDiv"></div>
+    <div style="color: white;">{{ mensaje|safe }}</div>
+
+    <form action="{{ url_for('juego') }}" method="POST">
+        <input type="hidden" name="intentos_restantes" value="{{ intentos_restantes }}">
+        <input type="hidden" name="intentos_totales" value="{{ intentos_totales }}">
+        <input type="hidden" name="aciertos" value="{{ aciertos }}">
+        <button style="margin: 10px" id="btn_continuar" class="button" {% if habilitar_continuar %} {% else %}disabled{% endif %}>Continuar ({{ intentos_restantes }})</button>
+    </form>
+
+    <form action="{{ url_for('final_del_juego') }}" method="POST">
+        <input type="hidden" name="intentos_totales" value="{{ intentos_totales }}">
+        <input type="hidden" name="aciertos" value="{{ aciertos }}">
+        <button style="margin: 10px" id="btn_ver_res" class="button" {% if habilitar_ver_res %} {% else %}disabled{% endif %}>Ver resultado</button>
+    </form>
+
+</body>
+</html>

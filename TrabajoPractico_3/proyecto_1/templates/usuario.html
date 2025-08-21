@@ -1,0 +1,113 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}Logged in{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Bienvenido: {{ user }}!!</h1>
+    <iframe src="https://giphy.com/embed/3YX5uFD3ksn5QGhQCQ" width="480" height="271" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+    <p><a href="https://giphy.com/gifs/simon-superrabbit-simon-simone-super-lapin-3YX5uFD3ksn5QGhQCQ">via GIPHY</a></p>
+
+    <ul>
+        <li><a href="{{ url_for('crear_reclamo', username=user ) }}">Crear Reclamo</a></li>
+        <li><a href="{{ url_for('listar_reclamos', username=user) }}">Listar Reclamos</a></li>
+        <li><a href="{{ url_for('mis_reclamos', username=user) }}">Mis Reclamos</a></li>
+        <li><a href="{{ url_for('logout') }}">Salir</a></li>
+    </ul>
+
+    <div id="crear-reclamo" class="seccion crear-reclamo" {% if seccion == 'crear_reclamo' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+        <h2>Crear Reclamo</h2>
+        {% if mostrar_formulario %}
+        <form action="{{ url_for('crear_reclamo', username=user) }}" method="POST">
+            <label for="detalle-problema">Detalle del Problema:</label><br>
+            <textarea id="detalle-problema" name="detalle-problema" rows="4" cols="50"></textarea><br>
+            <input type="hidden" name="action" value="crear_reclamo">
+            <button type="submit" class="btn btn-primary">Crear reclamo</button>
+        </form>
+        {% endif %}
+        <p>{{mensaje}}</p>
+        {% if reclamos_pendientes %}
+            <p> Si quiere adherirse a un reclamo y descartar el formulario anterior, haga click en adherirse al reclamo que desee.
+                Si desea confirmar el reclamo, haga click en Confirmar reclamo
+            </p>
+            <form action="{{ url_for('crear_reclamo', username=user) }}" method="POST">
+                <input type="hidden" name="action" value="confirmar_reclamo">
+                <input type="hidden" name="contenido" value="{{contenido}}">
+                <button type="submit" class="btn btn-primary">Confirmar reclamo</button>
+            </form>
+
+            {% for reclamo in reclamos_pendientes %}
+                <li>
+                    <b>ID Reclamo:</b> {{ reclamo[0]}},<br>
+                    <b>Estado:</b> {{ reclamo[1] }},<br>
+                    <b>Fecha/Hora:</b> {{ reclamo[2] }},<br>
+                    <b>Contenido:</b> {{ reclamo[3] }},<br>
+                    <b>Departamento:</b> {{ reclamo[4]}},<br>
+                    <b>Adherentes:</b> {{ reclamo[5] }}<br>
+                    <form action="{{ url_for('adherirse', username=user) }}" method="POST">
+                        <input type="hidden" name="reclamo_id" value="{{ reclamo[0] }}">
+                        <input type="hidden" name="seccion" value="crear_reclamo">
+                        <button type="submit" class="btn btn-primary">Adherirse</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div id="listar-reclamos" class="seccion listar-reclamos" {% if seccion == 'listar_reclamos' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+        <h2>Listar Reclamos</h2>
+        <form id="filtro-form" action="{{ url_for('listar_reclamos', username=user) }}" method="POST">
+            <p>Filtros por Departamento:</p>
+            <select id="filtro-departamento" name="filtro-departamento" oninput="this.form.submit()">
+                <option value="Todos" {% if filtro_departamento == 'Todos' %} selected {% endif %}>Todos los departamentos</option>
+                {% for departamento in departamentos %}
+                    <option value="{{ departamento }}" {% if departamento == filtro_departamento %} selected {% endif %}>{{ departamento }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if filtro_departamento != 'Todos' %}
+        <p>Reclamos correspondientes a {{ filtro_departamento }}</p>
+        {% endif %}
+        <ul>
+            {% for reclamo in reclamos_pendientes %}
+            <li>
+                <b>ID Reclamo:</b> {{ reclamo[0] }},<br>
+                <b>Estado:</b> {{ reclamo[1] }},<br>
+                <b>Fecha/Hora:</b> {{ reclamo[2] }},<br>
+                <b>Contenido:</b> {{ reclamo[3] }},<br>
+                <b>Departamento:</b> {{ reclamo[4] }},<br>
+                <b>Adherentes:</b> {{ reclamo[5] }}<br>
+                <form action="{{ url_for('adherirse', username=user) }}" method="POST">
+                    <input type="hidden" name="reclamo_id" value="{{ reclamo[0] }}">
+                    <input type="hidden" name="action" value="adherirse">
+                    <input type="hidden" name="seccion" value="listar_reclamos">
+                    <input type="hidden" name="option" value="{{filtro_departamento}}">
+                    <button type="submit" class="btn btn-primary">Adherirse</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>    
+
+    <div id="mis-reclamos" class="seccion mis-reclamos" {% if seccion == 'mis_reclamos' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+        <form action="{{ url_for('mis_reclamos', username=user) }}" method="POST"> </form>
+        <h2>Mis Reclamos</h2>
+        <ul>
+            {% for reclamo in reclamos %}
+            <li>ID Reclamo: {{ reclamo[0]}}, Estado: {{ reclamo[1] }} , Contenido: {{ reclamo[2] }} </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+<style>
+    .seccion {
+        display: none; /* Esconder todas las secciones inicialmente */
+    }
+    .seccion:target {
+        display: block;
+    }
+</style>
+
+{% endblock %}

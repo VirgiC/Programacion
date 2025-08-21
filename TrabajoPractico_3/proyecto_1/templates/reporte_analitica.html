@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Analitica</title>
+
+</head>
+
+<body>
+    <h1>Reporte de Analítica</h1>
+    <p>Número de reclamos totales: {{reclamos_totales}}</p>
+    <p>Mediana de reclamos resueltos: {{mediana_resueltos}}</p>
+    <p>Mediana de reclamos en proceso: {{mediana_en_proceso}}</p>
+    <p>Gráfico circular: </p>
+    <br><img src="{{grafico_circular}}"></br>
+    <p>Gráfico de palabras: </p>
+    <br><img src="{{grafico_palabras}}"></br>
+    
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Departamento</th>
+                <th>Estado</th>
+                <th>Contenido</th> 
+            </tr>
+        </thead>
+        <tbody>
+            {% for reclamo in reclamos %}
+            <tr>
+                <td>{{ reclamo[0] }}</td>
+                <td>{{ reclamo[1] }}</td>
+                <td>{{ reclamo[3] }}</td>
+                <td>{{ reclamo[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
