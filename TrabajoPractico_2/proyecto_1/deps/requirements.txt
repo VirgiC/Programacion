@@ -1,0 +1,15 @@
+flask==2.3.0
+pandas==2.0.3
+matplotlib==3.7.2
+scikit-learn==1.3.0
+numpy==1.24.4
+requests==2.31.0
+flask-cors==3.0.10
+SQLAlchemy==2.0.19
+flask-Login==0.6.3
+flask-SQLAlchemy==3.0.3
+email-validator==2.0.0
+python-dotenv==1.0.0
+pip==25.1.1
+ply==3.11
+pytest==7.4.0

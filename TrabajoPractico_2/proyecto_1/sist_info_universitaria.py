@@ -6,9 +6,6 @@ from modules.departamento import Departamento
 from modules.curso import Curso
 
 
-alumnos = []
-profesores = []
-
 def guardar_archivo(nombre_archivo, facultad):
     with open(nombre_archivo, 'w') as archivo:
         # Guardar profesores
@@ -36,63 +33,99 @@ def guardar_archivo(nombre_archivo, facultad):
 
 
 def leer_archivo(nombre_archivo):
-    alumnos = []
+    """
+    Lee un archivo de texto con datos de una facultad y construye
+    los objetos correspondientes.
+    Retorna una instancia de Facultad.
+    """
+    # Inicializar las listas que contendrán los datos
     profesores = []
-    departamentos = []
+    alumnos = []
+    departamentos_data = []
 
-    with open(nombre_archivo, 'r') as archivo:
-        for linea in archivo:
-            linea = linea.strip()
-            
-            if not linea:  # ignorar líneas vacías
-                continue
-
-            # LÍNEAS DE DEPARTAMENTO
-            if linea.startswith("Departamento:"):
-                # Extraer nombre y director
-                partes = linea.split("(Director:")
-                nombre_depto = partes[0].replace("Departamento:", "").strip()
-                director_nombre = partes[1].replace(")", "").strip()
+    try:
+        with open(nombre_archivo, 'r') as archivo:
+            for linea in archivo:
+                linea = linea.strip()
                 
-                # Buscar el objeto Profesor correspondiente
-                director_obj = next((p for p in profesores if p.get_nombre() == director_nombre), None)
-                if director_obj:
-                    departamentos.append((nombre_depto, director_obj))
-                continue
+                if not linea:  # Ignorar líneas vacías
+                    continue
 
-            # LÍNEAS DE PROFESOR
-            if "Profesor" in linea:
-                partes = linea.split(' ')
-                nombre = partes[0]
-                edad = int(partes[1].replace(',', ''))
-                profe = Profesor(nombre, edad)
-                profesores.append(profe)
-                continue
+                # LÓGICA DE PROCESAMIENTO ROBUSTA
+                try:
+                    # 1. LÍNEAS DE PROFESOR
+                    if "Profesor" in linea:
+                        partes = linea.split(' ')
+                        nombre = partes[0]
+                        edad = int(partes[1].replace(',', ''))
+                        profe = Profesor(nombre, edad)
+                        profesores.append(profe)
+                    
+                    # 2. LÍNEAS DE ESTUDIANTE
+                    elif len(linea.split(' ')) == 2 and not linea.startswith("Departamento:") and not linea.startswith("Curso:"):
+                        partes = linea.split(' ')
+                        nombre = partes[0]
+                        edad = int(partes[1].replace(',', ''))
+                        estudiante = Estudiante(nombre, edad)
+                        alumnos.append(estudiante)
 
-            # LÍNEAS DE ESTUDIANTE
-            partes = linea.split(' ')
-            nombre = partes[0]
-            edad = int(partes[1])
-            estudiante = Estudiante(nombre, edad)
-            alumnos.append(estudiante)
+                    # 3. LÍNEAS DE DEPARTAMENTO
+                    elif linea.startswith("Departamento:"):
+                        partes = linea.split("(Director:")
+                        nombre_depto = partes[0].replace("Departamento:", "").strip()
+                        director_nombre = partes[1].replace(")", "").strip()
+                        departamentos_data.append({'nombre': nombre_depto, 'director': director_nombre})
+                    
+                    # 4. LÍNEAS DE CURSO
+                    elif linea.startswith("Curso:"):
+                        # Simplemente imprime un mensaje porque no hay una clase 'Curso'
+                        # para instanciar en este momento.
+                        print(f"Línea de curso encontrada: {linea}")
 
-    # CREAR OBJETO FACULTAD
-    if departamentos:
-        facultad = Facultad(departamentos[0][0], departamentos[0][1])
-        for prof in profesores[1:]:
-            facultad.contratar_profesor(prof)
-        for depto_nombre, director_obj in departamentos[1:]:
-            facultad.crear_departamento(depto_nombre, director_obj)
-    else:
-        facultad = Facultad("", profesores[0])  # fallback
+                except (ValueError, IndexError) as e:
+                    print(f"Advertencia: No se pudo procesar la línea '{linea}'. Error: {e}")
+    except FileNotFoundError:
+        print(f"Error: El archivo '{nombre_archivo}' no se encontró.")
+        return None
 
-    # Inscribir estudiantes
+    # CONSTRUIR LOS OBJETOS DESPUÉS DE PROCESAR TODO EL ARCHIVO
+    if not profesores:
+        print("Error: No se encontraron profesores en el archivo. No se puede crear la Facultad.")
+        return None
+
+    # Crear la instancia de Facultad. Asume el primer departamento o un director por defecto.
+    director_principal = profesores[0]
+    facultad = Facultad("Facultad", director_principal)
+
+    # Contratar a todos los profesores
+    for prof in profesores:
+        facultad.contratar_profesor(prof)
+
+    # Crear los departamentos y asignar directores
+    for depto_info in departamentos_data:
+        director_obj = next((p for p in profesores if p.get_nombre() == depto_info['director']), None)
+        if director_obj:
+            facultad.crear_departamento(depto_info['nombre'], director_obj)
+        else:
+            print(f"Advertencia: Director '{depto_info['director']}' no encontrado.")
+    
+    # Inscribir a los alumnos
     for alumno in alumnos:
         facultad.inscribir_alumno(alumno)
 
     return facultad
 
+    print("BIENVENIDO A LA FACULTAD DE INGENIERIA")
+    facultad = leer_archivo("archivo.txt")
 
+    if facultad:
+        print("---")
+        print("Profesores:\n" + facultad.mostrar_profesores())
+        print("---")
+        print("Alumnos:\n" + facultad.mostrar_alumnos())
+        print("---")
+    else:
+        print("No se pudo iniciar el programa debido a errores en la lectura del archivo.")
 
 facultad = leer_archivo("archivo.txt") #Creamos una copia, llama a la función para crear y poblar la instancia de Facultad.
 print("BIENVENIDO A LA FACULTAD DE INGENIERIA \n")

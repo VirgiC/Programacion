@@ -1,5 +1,4 @@
 Julio 35, Profesor
-Julio 35, Profesor
 Angel 50, Profesor
 Luis 40, Profesor
 
@@ -9,9 +8,8 @@ Facundo 19
 Catherine 21
 Gabriel 25
 Joaquin 25
-Jose 18
 
-Departamento: Facultad (Director: Julio)
 Departamento: Departamento de Biologia (Director: Julio)
 Departamento: Departamento de Fisiologia (Director: Angel)
 Departamento: Departamento de Matematica (Director: Luis)
+Curso: Matematica (Profesor: Luis)
