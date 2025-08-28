@@ -16,7 +16,7 @@ print("Iniciando el proceso de reentrenamiento del modelo...")
 with app.app_context():
     gestor_db = GestorDB(db)
 
-    # Ahora sabemos que gestor_db.todos_los_reclamos() es el método correcto.
+    
     # Devuelve una lista de tuplas: (reclamo_obj, id_usuario_creador, adherentes, dias)
     all_claims_data_from_db = gestor_db.todos_los_reclamos()
     

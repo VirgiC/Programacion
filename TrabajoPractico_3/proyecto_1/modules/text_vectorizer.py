@@ -9,10 +9,12 @@ import string
 from collections import Counter
 from sklearn.base import BaseEstimator, TransformerMixin
 
+#esta clase convierte texto legible para humanos en un formato numerico que los algoritmos de Machine Learning
+#puede procesar (vectores). /es un transformador de datos/
 class TextVectorizer(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.__word2idx = {}
-        self.stop_words = set(stopwords.words('spanish'))
+        self.stop_words = set(stopwords.words('spanish')) #stopword: elimina palabras comunes sin mucho significado
         self.spanish_stemmer = SnowballStemmer('spanish')
 
     def __get_tokens(self, texto:str):        
@@ -25,7 +27,7 @@ class TextVectorizer(BaseEstimator, TransformerMixin):
     # Text to Vector
     def __text_to_vector(self, texto):
         word_vector = np.zeros(len(self.vocabulario_))
-        texto = self.__get_tokens(texto) #agrego esta linea
+        texto = self.__get_tokens(texto) #demuestra el proceso de limpieza y normalizacion del texto
         for word in texto.split(" "):
             if self.__word2idx.get(word) is None:
                 continue
@@ -33,7 +35,7 @@ class TextVectorizer(BaseEstimator, TransformerMixin):
                 word_vector[self.__word2idx.get(word)] += 1
         return np.array(word_vector)
 
-    def fit(self, X, y=None):
+    def fit(self, X, y=None): #aca el modelo conce las palabras
         X_procesado = []
         for reclamo in X:
             X_procesado.append(self.__get_tokens(reclamo))
@@ -48,7 +50,7 @@ class TextVectorizer(BaseEstimator, TransformerMixin):
 
         return self
 
-    def transform(self, X, y=None):        
+    def transform(self, X, y=None):   #una vez que aprende el vocabulario lo convierte a su expresion numerica
         word_vectors = np.zeros((len(X), len(self.vocabulario_)), dtype=np.int_)
         for i, texto in enumerate(X):
             word_vectors[i] = self.__text_to_vector(texto)

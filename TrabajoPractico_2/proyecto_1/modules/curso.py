@@ -2,12 +2,12 @@ from modules.profesor import Profesor
 from modules.estudiante import Estudiante
 
 class Curso:
-    def __init__ (self, nombre_c, profesor:Profesor):   
+    def __init__ (self, nombre_c, profesor:Profesor):
         '''Curso representa un curso que forma parte de una facultad.
         - Cuando se crea un nuevo curso, debe tener un profesor que enseñe en él.
         - enseña en... representado por una lista de profesores que enseñan en ese curso.
         - asiste a... representado por una lista de estudiantes que asisten a ese curso'''
-        self.__catedra = [profesor]  # lista de profesores
+        self.__catedra = [profesor] # lista de profesores
         self.__inscriptos = []       # lista de estudiantes
         self.__nombre = nombre_c
         self.__departamento = None
@@ -17,8 +17,13 @@ class Curso:
         self.__catedra.append(profesor)
     
     def set_departamento(self, departamento):
+        '''Establecer el departamento del curso'''
         self.__departamento = departamento
     
+    def get_departamento(self):
+        '''Retorna el objeto del departamento asociado'''
+        return self.__departamento
+
     def get_nombre_dpt(self):
         '''Retorna el nombre del departamento asociado'''
         if self.__departamento is not None:
@@ -44,4 +49,3 @@ class Curso:
             return self.__catedra[0]
         
         return None
-

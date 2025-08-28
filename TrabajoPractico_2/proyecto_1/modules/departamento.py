@@ -1,12 +1,12 @@
 from modules.profesor import Profesor
 
 class Departamento: 
-    def __init__(self, profesor:Profesor, nombre:str): 
+    def __init__(self, profesor:Profesor, nombre:str): #recibe una instancia de profesor como parametro
         '''Clase departamento representa un departamento que conforma a la facultad.
         profes es una lista de objetos Profesor que estan asignados a ese departamento.
         cursos es una lista de objetos Curso que estan asociados al departamento'''
         self.__profes = []
-        self.__director = profesor
+        self.__director = profesor #la almacena como un atributo 
         self.__nombre_dpt = nombre
         self.__cursos = []  
    

@@ -8,8 +8,9 @@ Facundo 19
 Catherine 21
 Gabriel 25
 Joaquin 25
+Jose 18
 
-Departamento: Departamento de Biologia (Director: Julio)
-Departamento: Departamento de Fisiologia (Director: Angel)
-Departamento: Departamento de Matematica (Director: Luis)
-Curso: Matematica (Profesor: Luis)
+Departamento: Ingenieria (Director: Julio)
+Departamento: Departamento de Fisica (Director: Angel)
+Departamento: Departamento de Informatica (Director: Luis)
+Curso: Programacion Avanzada (Profesor: Luis)

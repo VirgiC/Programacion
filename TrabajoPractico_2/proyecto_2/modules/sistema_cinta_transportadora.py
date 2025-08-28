@@ -36,14 +36,16 @@ class Calculadora:
      de alimentos que estan dentro de un cajon'''
      pass    
 
-    def calcular_promedio_aw(self, cajon:Cajon, p_clase ): #p_clase: Este parámetro es el tipo de clase de alimento por el cual se quiere filtrar (ej., Verdura, Fruta, Kiwi, Alimento mismo).
+    def calcular_promedio_aw(self, cajon:Cajon, p_clase ): #p_clase: Este parámetro es el tipo de clase de alimento por 
+        #el cual se quiere filtrar (ej., Verdura, Fruta, Kiwi, Alimento mismo).
         '''Calcular_promedio_aw recibe el cajon y la clase de alimento correspondiente.
         Establece el promedio de la actividad acuosa dependiendo del tipo de alimento al recorrer cajon'''
         cont = 0
         promedio = 0.0
 
         for alimento in cajon:
-            if isinstance(alimento, p_clase): #isinstance() verifica si el alimento actual en el bucle es una instancia de la p_clase especificada 
+            if isinstance(alimento, p_clase): #isinstance() verifica si el alimento actual en el bucle es una instancia de la 
+                #p_clase especificada 
                 promedio += alimento.get_aw() #Suma la actividad acuosa del alimento si coincide con la clase.
                 cont += 1 # Lleva la cuenta de cuántos alimentos de esa clase se encontraron.
 

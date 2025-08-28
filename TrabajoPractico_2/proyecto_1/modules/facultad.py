@@ -23,7 +23,9 @@ class Facultad:
         self.__estudiantes_facu.append(alumno) 
     
     def contratar_profesor(self, profe:Profesor): 
-        self.__profes_facu.append(profe) 
+        self.__profes_facu.append(profe) #Aquí, la instancia de Profesor (profe) se añade a una lista de profesores 
+        #de la facultad. La facultad "tiene" a este profesor.
+
         if self.__cursos: 
             indice_cursos = randint(0,len(self.__cursos)-1)
             profe.set_cursos(self.__cursos[indice_cursos])
@@ -33,7 +35,10 @@ class Facultad:
                     profe.set_departamentos(departamento)
                     departamento.set_profes(profe)
                     break
-    
+            #Si la facultad fuera eliminada, el objeto Profesor (profe) seguiría existiendo y podría ser "contratado" 
+            #por otra facultad o ser una entidad independiente en el sistema.
+
+            
     def crear_departamento(self, nombre_dpto, director: Profesor): # Crear un departamento 
         #con un director
         # Se asume que el director ya es un profesor de la facultad.
@@ -48,16 +53,12 @@ class Facultad:
         self.__cursos[opcion_curso].set_inscriptos(alumno) 
         self.__estudiantes_facu[opcion_del_estudiante].set_cursos_asistidos(self.__cursos[opcion_curso])
 
-    def crear_curso(self, nombre_curso, num_departamento, profe):
-        if isinstance(profe, int): 
-            profe = self.__profes_facu[profe]
-        
-        curso = Curso(nombre_curso, profe)
-        curso.set_departamento(self.__departamentos[num_departamento])
-        self.__cursos.append(curso)
-        self.__departamentos[num_departamento].set_cursos(curso)
-        profe.set_cursos(curso)
-        profe.set_departamentos(self.__departamentos[num_departamento])
+    def crear_curso(self, nombre, depto_index, profesor_index):
+        departamento = self.departamentos[depto_index]
+        profesor = self.professores[profesor_index]
+        nuevo_curso = Curso(nombre, departamento, profesor)
+        self.cursos.append(nuevo_curso)  # Asegúrate de agregarlo aquí
+        departamento.agregar_curso(nuevo_curso)  
 
     def set_cursos(self, curso:Curso):
         self.__cursos.append(curso)

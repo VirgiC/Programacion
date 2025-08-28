@@ -50,7 +50,8 @@ class GestorDB:
         '''reclamos_filas es una lista de objetos que cada elemento de la lista es una fila de TablaReclamos, 
         esa fila es un objeto del tipo TablaReclamos, podemos pensarlo una subtabla'''
         if departamento == None:
-            reclamos_filas= self.__db.session.query(TablaReclamos).all()
+            reclamos_filas= self.__db.session.query(TablaReclamos).all() #obtiene todos los reclamos de la tabla de la base de 
+            #datos y los devuelve como una lista de objetos de Python.
         else:
             reclamos_filas = self.__db.session.query(TablaReclamos).filter_by(departamento=departamento).all()
         reclamos_objetos = []
@@ -88,7 +89,7 @@ class GestorDB:
                 setattr(fila, campo, valor)
             
             ''' Guardar los cambios en la base de datos '''
-            self.__db.session.commit()
+            self.__db.session.commit() #para que el cambio se guarde en la tabla de forma definitiva.
 
     def cargar_reclamo(self,reclamo:Reclamo,  cliente_id: int): 
         '''Carga el reclamo que recibe como parametro en la base de datos si es que no existe ya en esta'''
@@ -191,7 +192,8 @@ class GestorDB:
         ''' Recibe como parametro opcional el departamento por el cual se quiere filtrar los reclamos y retorna una lista de tuplas
         El primero elemento de cada tupla es un objeto Reclamo (que corresponde a ese departamento), y el
         segundo elemento de la tupla es la cantidad de adheridos '''
-        reclamos_query = self.__db.session.query(TablaReclamos).filter_by(estado='pendiente')
+        reclamos_query = self.__db.session.query(TablaReclamos).filter_by(estado='pendiente') # filtra los reclamos para mostrar 
+        #solo aquellos que tienen el estado "pendiente"
         
         if departamento and departamento != 'todos':
             reclamos_query = reclamos_query.filter_by(departamento=departamento)
@@ -228,7 +230,9 @@ class GestorDB:
  
     def consultar_usuario(self, filtro, valor_filtro):
         if filtro == 'email':
-            return TablaUsuario.query.filter_by(email=valor_filtro).first()
+            return TablaUsuario.query.filter_by(email=valor_filtro).first() #Busca en la tabla de usuarios un registro donde 
+        #el campo email sea igual al valor de la variable valor_filtro
+
         elif filtro == 'id':
             return TablaUsuario.query.filter_by(id=valor_filtro).first()
         else:

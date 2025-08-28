@@ -31,15 +31,23 @@ objetos Python que representan las tablas y columnas de la base de datos. '''
 #_____________________________________________________________________________________________________________#
 
 '''Tabla de asociacion: Establece una relación muchos a muchos entre usuarios y reclamos. 
+Una relación muchos a muchos ocurre cuando los registros de una tabla pueden estar relacionados con 
+múltiples registros de otra tabla, y viceversa.
+
 Cada usuario puede seguir múltiples reclamos y cada reclamo puede ser seguido por múltiples usuarios.'''
 '''Define una columna reclamo_id que es una clave foránea referenciando la columna id de la tabla reclamos.'''
 '''Define una columna user_id que es una clave foránea referenciando la columna id de la tabla usuario.'''
-asociacion_usuarios_reclamos = db.Table('usuario_reclamo',
+
+asociacion_usuarios_reclamos = db.Table('usuario_reclamo', 
     Column('user_id', Integer, ForeignKey('usuario.id')),
     Column('reclamo_id', Integer, ForeignKey('reclamos.id')))
+#Esta tabla no almacena información de reclamos ni de usuarios. Su único propósito es conectar los 
+#registros de las otras dos tablas. Cada fila en asociacion_usuarios_reclamos representa una conexión.
 
 '''Define la estructura de la tabla usuario con varios campos y establece una relación muchos a muchos con TablaReclamos.'''
 class TablaUsuario(UserMixin, db.Model):
+    #la clase TablaUsuario hereda de db.Model y le dices a SQLAlchemy que esta clase representa una 
+    #tabla en la base de datos llamada tabla_usuarios.
     __tablename__ = 'usuario'
     '''Define como clave primaria el ID del usuario'''
     id = Column(Integer, primary_key=True)

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, EqualTo, Email, Length
 class RegisterForm(FlaskForm):
     '''Este tipo de formularios permite validar el ingreso de datos,
     el formato de email, tamaño de contraseña y confirmación de contraseña'''
-    username = StringField(label="Nombre de usuario", validators=[DataRequired()])
+    username = StringField(label="Nombre de usuario", validators=[DataRequired()]) 
     email = StringField(label='Email', validators=[DataRequired(), Email()])
     nombre = StringField(label="Nombre", validators=[DataRequired()])
     apellido = StringField(label="Apellido", validators=[DataRequired()])

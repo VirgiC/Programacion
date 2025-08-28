@@ -6,6 +6,7 @@ from fpdf import FPDF
 import textwrap
 import base64
 import warnings
+import os
 
 #esto es para limpiar los warnings de sklearn
 from flask import render_template, redirect, url_for, flash, abort, session, request, make_response
@@ -375,34 +376,46 @@ def analitica():
     seccion = 'analitica'
     departamento = departamento_actual(admin_info)
     cant_reclamos_totales = gestor_reclamo.cant_reclamos_tot()
-    gestor_reclamo.grafico_circular()
-    gestor_reclamo.grafico_palabras()
+    
+    # Genera las rutas absolutas para los archivos
+    ruta_grafico_circular = os.path.join(app.root_path, "static", "grafico_circular.png")
+
+    #La principal ventaja de usar app.root_path es que te proporciona una ruta consistente y confiable, sin importar 
+    #desde dónde ejecutes tu aplicación.
+
+    ruta_grafico_palabras = os.path.join(app.root_path, "static", "grafico_palabras.png")
+
+    gestor_reclamo.grafico_circular() # Estas líneas ahora deberían usar la ruta absoluta
+    gestor_reclamo.grafico_palabras() # desde gestor_reclamo.py
+
     mediana_resueltos = gestor_reclamo.mostrar_mediana(mediana_resuelto)
     mediana_en_proceso = gestor_reclamo.mostrar_mediana(mediana_proceso)
     
     if request.method == 'POST':
-        # Si se envía el formulario, obtenemos la acción y los reclamos
-        # y generamos el reporte correspondiente.
+            # Si se envía el formulario, obtenemos la acción y los reclamos
+            # y generamos el reporte correspondiente.
             reclamos = gestor_reclamo.todos_los_reclamos() #lista de tuplas
             if request.form['accion'] == 'descargar_pdf':
+                # <--- Pasa las rutas absolutas generadas aquí
                 return generar_reporte_pdf(cant_reclamos_totales, mediana_resueltos, mediana_en_proceso,
-                                           "static/grafico_circular.png", "static/grafico_palabras.png",
+                                           ruta_grafico_circular, ruta_grafico_palabras,
                                            reclamos)
             elif request.form['accion'] == 'descargar_html':
+                # <--- Pasa las rutas absolutas generadas aquí
                 return generar_reporte_html(cant_reclamos_totales, mediana_resueltos, mediana_en_proceso, 
-                                            "static/grafico_circular.png", "static/grafico_palabras.png",
+                                            ruta_grafico_circular, ruta_grafico_palabras,
                                             reclamos)
         
     return render_template('admin.html',
-                            reclamos_totales = cant_reclamos_totales,
-                            mediana_resueltos = mediana_resueltos,
-                            mediana_en_proceso = mediana_en_proceso,
-                            departamento = departamento,
-                            seccion= seccion)      
+                             reclamos_totales = cant_reclamos_totales,
+                             mediana_resueltos = mediana_resueltos,
+                             mediana_en_proceso = mediana_en_proceso,
+                             departamento = departamento,
+                             seccion= seccion)       
 
 @app.route("/logout")
 def logout():   
-    logout_user()      
+    logout_user()       
     session['username'] = 'Invitado' 
     return redirect(url_for('inicio'))
     
@@ -418,6 +431,7 @@ def generar_reporte_pdf(reclamos_totales, mediana_resueltos, mediana_en_proceso,
     pdf.cell(200, 10, f"Mediana de reclamos resueltos: {mediana_resueltos}", 0, 1)
     pdf.cell(200, 10, f"Mediana de reclamos en proceso: {mediana_en_proceso}", 0, 1)
     pdf.ln(10)
+    # <--- Ahora 'grafico_circular' y 'grafico_palabras' son las rutas absolutas
     pdf.image(grafico_circular, x=10, y=pdf.get_y() + 10, w=100)
     pdf.ln(10)
     pdf.image(grafico_palabras, x=100, y=pdf.get_y() + 10, w=100)
@@ -432,7 +446,7 @@ def generar_reporte_pdf(reclamos_totales, mediana_resueltos, mediana_en_proceso,
         pdf.cell(0, 10, "ID: {}".format(reclamo[0]), 0, 1)
         pdf.cell(0, 10, "Departamento: {}".format(reclamo[1]), 0, 1)
         pdf.cell(0, 10, "Estado: {}".format(reclamo[3]), 0, 1)
-       # Dividir el contenido en líneas más cortas
+        # Dividir el contenido en líneas más cortas
         contenido = textwrap.wrap(reclamo[2], width=100)  # Longitud máxima de línea: 50 caracteres
         pdf.cell(0, 10, "Contenido:", 0, 1) 
         for linea in contenido:
@@ -450,6 +464,7 @@ def generar_reporte_html(reclamos_totales, mediana_resueltos, mediana_en_proceso
     circular=None 
     palabras = None
     
+    # <--- Ahora 'grafico_circular' y 'grafico_palabras' son las rutas absolutas
     with open(grafico_circular,'rb') as archivo:
         circular = archivo.read() 
     with open(grafico_palabras,'rb') as archivo:
@@ -461,8 +476,8 @@ def generar_reporte_html(reclamos_totales, mediana_resueltos, mediana_en_proceso
     imagen_codificada_palabras = f'data:image/png;base64,{imagen_codificada_palabras}'
 
     html_content = render_template('reporte_analitica.html', reclamos_totales=reclamos_totales, mediana_resueltos=mediana_resueltos,
-                                    mediana_en_proceso=mediana_en_proceso, reclamos=reclamos,
-                                    grafico_palabras=imagen_codificada_palabras, grafico_circular=imagen_codificada_circular)
+                                   mediana_en_proceso=mediana_en_proceso, reclamos=reclamos,
+                                   grafico_palabras=imagen_codificada_palabras, grafico_circular=imagen_codificada_circular)
 
     response = make_response(html_content)
     response.headers['Content-Type'] = 'text/html'

@@ -1,7 +1,7 @@
 Julio 35, Profesor
-Julio 35, Profesor
 Angel 50, Profesor
 Luis 40, Profesor
+Andres 50, Profesor
 
 Agustin 20
 Perez 22
@@ -11,7 +11,5 @@ Gabriel 25
 Joaquin 25
 Jose 18
 
-Departamento: Facultad (Director: Julio)
-Departamento: Departamento de Biologia (Director: Julio)
-Departamento: Departamento de Fisiologia (Director: Angel)
-Departamento: Departamento de Matematica (Director: Luis)
+Departamento: Departamento de Fisica (Director: Angel)
+Departamento: Departamento de Informatica (Director: Luis)
